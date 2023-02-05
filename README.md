@@ -1,5 +1,5 @@
 # SW Optimizations for WiFi-6 (HEW) SoC
-## Microprocessor-Application Term project (Park Jonghyuk, Ko Ryeowook)
+Microprocessor-Application Term project (Park Jonghyuk, Ko Ryeowook)
 
 # 0. Key objectives of this Term project 
 ## __Optimizing reference QR Decomposition & LDPC Decoding C code__
