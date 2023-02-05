@@ -63,5 +63,9 @@ Microprocessor-Application Term project (Park Jonghyuk, Ko Ryeowook)
 * Usage of Vivado SDK
 * Improved my C programming skills
 * Learning of ways to optimize C code
-* Understanding of assembly language
+  + Cache optimization
+  + Loop optimization
+  + Assembly level coding
+  + Temporary variables
+* Understanding of assembly language (+ Neon)
 * Read IEEE articles related to software optimization
