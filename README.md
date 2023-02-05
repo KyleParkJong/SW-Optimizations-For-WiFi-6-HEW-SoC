@@ -1,23 +1,21 @@
 # SW Optimizations for WiFi-6 (HEW) SoC
 ## Microprocessor-Application Term project (Park Jonghyuk, Ko Ryeowook)
 
----------------------------------------------
-
 # 0. Key objectives of this Term project 
 ## __Optimizing reference QR Decomposition & LDPC Decoding C code__
   * Pure-SW implementation (No HW block allowed to accelerate the function)
 
-## #Evaluation Criteria
+## > Evaluation Criteria
 * Reproduibility
 * Accuracy (NSR)
 * Performance (How fast it got compared to the reference)
 * Novelty
 
-## #Things provided in class
+## > Things provided in class
 * Reference C code of QR Decomposition, LDPC Decoding algorithm
 * Benchmarking C code
 
-## #What we considered
+## > What we considered
 * Accuracy and time
 * Understanding of reference C code
 * Debugged into assembly level to find the part that takes long time.
