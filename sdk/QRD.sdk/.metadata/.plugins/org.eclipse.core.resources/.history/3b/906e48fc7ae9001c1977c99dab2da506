@@ -1,0 +1,33 @@
+/*
+ * sqrt_assembly.s
+ *
+ *  Created on: 2022. 6. 9.
+ *      Author: Kyle Park
+ */
+
+.text
+.syntax unified
+
+.align 4
+.global sqrt_assembly
+.arm
+
+/*
+
+r0 : sq
+r1 : tmp_r
+
+*/
+
+sqrt_assembly:
+    push    {r7, lr}
+    sub     sp, sp, #8
+    add     r7, sp, #0
+    vstr.32 s0, [r7, #4]
+    vldr.32 s0, [r7, #4]
+    bl      std::sqrt(float)
+    vmov.f32        s15, s0
+    vmov.f32        s0, s15
+    adds    r7, r7, #8
+    mov     sp, r7
+    pop     {r7, pc}

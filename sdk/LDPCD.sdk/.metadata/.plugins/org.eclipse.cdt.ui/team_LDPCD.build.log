@@ -1,0 +1,77 @@
+22:52:48 **** Incremental Build of configuration Debug for project team_LDPCD ****
+make pre-build main-build 
+a9-linaro-pre-build-step
+' '
+'Building file: ../src/main.c'
+'Invoking: ARM v7 gcc compiler'
+arm-none-eabi-gcc -Wall -O3 -g3 -c -fmessage-length=0 -MT"src/main.o" -mcpu=cortex-a9 -mfpu=neon -mfloat-abi=hard -I../../team_LDPCD_bsp/ps7_cortexa9_0/include -MMD -MP -MF"src/main.d" -MT"src/main.o" -o "src/main.o" "../src/main.c"
+In file included from ../src/benchmarking.h:43:0,
+                 from ../src/main.c:12:
+../src/LDPC.h:35:0: warning: "TRUE" redefined
+ #define TRUE 1
+ 
+In file included from ../../team_LDPCD_bsp/ps7_cortexa9_0/include/xtime_l.h:64:0,
+                 from ../src/main.c:8:
+../../team_LDPCD_bsp/ps7_cortexa9_0/include/xil_types.h:65:0: note: this is the location of the previous definition
+ #  define TRUE  1U
+ 
+In file included from ../src/benchmarking.h:43:0,
+                 from ../src/main.c:12:
+../src/LDPC.h:36:0: warning: "FALSE" redefined
+ #define FALSE 0
+ 
+In file included from ../../team_LDPCD_bsp/ps7_cortexa9_0/include/xtime_l.h:64:0,
+                 from ../src/main.c:8:
+../../team_LDPCD_bsp/ps7_cortexa9_0/include/xil_types.h:69:0: note: this is the location of the previous definition
+ #  define FALSE  0U
+ 
+../src/main.c: In function 'main':
+../src/main.c:357:54: warning: initialization from incompatible pointer type [-Wincompatible-pointer-types]
+   {"LDPC Reference", TEST_ROUNDS, initializor_dummy, ldpcd_ref,
+                                                      ^~~~~~~~~
+../src/main.c:357:54: note: (near initialization for 'BenchmarkCases[0].benchmarker')
+../src/main.c:358:5: warning: initialization from incompatible pointer type [-Wincompatible-pointer-types]
+    {NLLR, out_ldpcd_ref},
+     ^~~~
+../src/main.c:358:5: note: (near initialization for 'BenchmarkCases[0].uiParam[0]')
+../src/main.c:358:11: warning: initialization from incompatible pointer type [-Wincompatible-pointer-types]
+    {NLLR, out_ldpcd_ref},
+           ^~~~~~~~~~~~~
+../src/main.c:358:11: note: (near initialization for 'BenchmarkCases[0].uiParam[1]')
+../src/main.c:361:57: warning: initialization from incompatible pointer type [-Wincompatible-pointer-types]
+   {"LDPC Optimization", TEST_ROUNDS, initializor_dummy, ldpcd_opt,
+                                                         ^~~~~~~~~
+../src/main.c:361:57: note: (near initialization for 'BenchmarkCases[1].benchmarker')
+../src/main.c:362:5: warning: initialization from incompatible pointer type [-Wincompatible-pointer-types]
+    {NLLR, out_ldpcd_opt},
+     ^~~~
+../src/main.c:362:5: note: (near initialization for 'BenchmarkCases[1].uiParam[0]')
+../src/main.c:362:11: warning: initialization from incompatible pointer type [-Wincompatible-pointer-types]
+    {NLLR, out_ldpcd_opt},
+           ^~~~~~~~~~~~~
+../src/main.c:362:11: note: (near initialization for 'BenchmarkCases[1].uiParam[1]')
+../src/main.c:367:2: warning: implicit declaration of function 'Xil_L1DCacheEnable' [-Wimplicit-function-declaration]
+  Xil_L1DCacheEnable();
+  ^~~~~~~~~~~~~~~~~~
+../src/main.c:368:2: warning: implicit declaration of function 'Xil_L2CacheDisable' [-Wimplicit-function-declaration]
+  Xil_L2CacheDisable();
+  ^~~~~~~~~~~~~~~~~~
+../src/main.c:369:2: warning: implicit declaration of function 'Xil_L1ICacheEnable' [-Wimplicit-function-declaration]
+  Xil_L1ICacheEnable();
+  ^~~~~~~~~~~~~~~~~~
+'Finished building: ../src/main.c'
+' '
+'Building target: team_LDPCD.elf'
+'Invoking: ARM v7 gcc linker'
+arm-none-eabi-gcc -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -Wl,-build-id=none -specs=Xilinx.spec -Wl,-T -Wl,../src/lscript.ld -L../../team_LDPCD_bsp/ps7_cortexa9_0/lib -o "team_LDPCD.elf"  ./src/benchmarking.o ./src/main.o   -lm -Wl,--start-group,-lxil,-lgcc,-lc,--end-group
+'Finished building target: team_LDPCD.elf'
+' '
+'Invoking: ARM v7 Print Size'
+arm-none-eabi-size team_LDPCD.elf  |tee "team_LDPCD.elf.size"
+   text	   data	    bss	    dec	    hex	filename
+  84832	1682204	115350304	117117340	6fb119c	team_LDPCD.elf
+'Finished building: team_LDPCD.elf.size'
+' '
+
+22:53:00 Build Finished (took 11s.882ms)
+

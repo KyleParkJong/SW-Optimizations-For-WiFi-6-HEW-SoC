@@ -1,0 +1,493 @@
+#include <stdlib.h>
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
+
+#include <xtime_l.h>
+#include <xil_printf.h>
+
+//#include "parameter.h"
+#include "benchmarking.h"
+#include "LDPC.h"
+#include "matrix.h"
+
+#define TEST_CASE 2
+#define TEST_ROUNDS 5
+
+unsigned int initializor_dummy(float (*uiParam0)[648], float **uiParam1){return 1;}
+unsigned int validator_dummy(float (*uiParam0)[648], float **uiParam1){return 1;}
+
+void ldpcd_ref(float (*NLLR)[N], float** ref_out) {
+
+	float Zxn[Z * Mp][Z * Np] = { 0, }; // Zn bit node processing message
+	float Zn[Z * Np] = { 0, };  // final Value L
+	float Lxn[Z * Mp][Z * Np] = { 0, };// Lxn check node processing message
+
+	float min1 = 500; //가장 최솟값
+	float min2 = 500; //두번째 최솟값
+	int minx = 0; //가장 최솟값의 좌표
+	int sgn = 1; //total 부호
+
+	for (int p = 0; p < WC; p++) {
+
+		for(int i = 0; i < Z * Mp; i++){
+			for(int j = 0; j < Z * Np; j++){
+				Zxn[i][j] = 0;
+				Lxn[i][j] = 0;
+			}
+		}
+
+		for (int i = 0; i < N; i++)
+			Zn[i] = NLLR[p][i];
+
+		for (int k = 0; k < iter; k++) { //iteration
+		//printf("\n*******************************iteration : %d *****************************\n", k);
+			for (int m = 0; m < layer; m++) {
+				//printf("\n*******************************layer : %d *****************************\n", m);
+				// step 2 Bit Node Processing, Zxn  = Zn - Lxn
+				for (int i = 0; i < N; i++) {
+					for (int j = m * Z; j < (m + 1) * Z; j++) {
+						if (H[j][i]) {
+							Zxn[j][i] = Zn[i] - Lxn[j][i];
+						}
+					}
+				}
+
+				// step 3 Check Node Processing, Lxn = sgn * min(Zxn)
+				for (int j = m * Z; j < (m + 1) * Z; j++) {
+					//min1, min2 step
+					for (int i = 0; i < N; i++) {
+						if (H[j][i]) {
+							if (min1 > fabs(Zxn[j][i])) {
+								min2 = min1;
+								min1 = fabs(Zxn[j][i]);
+								minx = i;
+							}
+							else if (min2 > fabs(Zxn[j][i])) {
+								min2 = fabs(Zxn[j][i]);
+							}
+							if (Zxn[j][i] < 0) {
+								sgn = sgn * -1;
+							}
+						}
+					}
+
+					//sel step
+					for (int i = 0; i < N; i++) {
+						if (H[j][i]) {
+							if (minx == i) {
+								if (min2 - Offset > 0) {
+									Lxn[j][i] = min2 - Offset;
+								}
+								else {
+									Lxn[j][i] = 0;
+								}
+							}
+							else {
+								if (min1 - Offset > 0) {
+									Lxn[j][i] = min1 - Offset;
+								}
+								else {
+									Lxn[j][i] = 0;
+								}
+							}
+							if (Zxn[j][i] >= 0) {
+								Lxn[j][i] = Lxn[j][i] * sgn;
+							}
+							else
+								Lxn[j][i] = Lxn[j][i] * sgn * -1;
+						}
+					}
+					//min1, min2, sgn reset
+					min1 = 500;
+					min2 = 500;
+					sgn = 1;
+				}
+
+				//step 4 Bit Node Updating Zn = Zxn + Lxn
+				for (int j = m * Z; j < (m + 1) * Z; j++) {
+					for (int i = 0; i < N; i++) {
+						if (H[j][i]) {
+							Zn[i] = Zxn[j][i] + Lxn[j][i];
+						}
+					}
+				}
+			}
+		}
+
+		/* output before Hard Decision */
+		for (int i = 0; i < MAX_LENGTH; i++)
+			ref_out[p][i] = Zn[i];
+	}
+}
+
+void ldpcd_opt (float (*NLLR)[N], float** opt_out) {
+
+	///////////////////////
+	// Edit code below!! //
+
+	push    {r4,r5,r6,r7,r8,r9,r10,r11,lr}
+	movw    r2, #17792
+	vpush   {d8}
+	sub     sp, sp, #561152
+	sub     sp, sp, #1328
+	mov     r4, r1
+	sub     sp, sp, #4
+	movt    r2, #4
+	mov     r1, #0
+	mov     r11, r0
+	add     r0, sp, #2608
+	ldr     r6, [pc, #+632]
+	bl      +13052  ; addr=0x00103fe0: memset
+	mov     r2, #2592
+	mov     r1, #0
+	add     r0, sp, #16
+	vldr    d8, [pc, #+596]
+	bl      +13032  ; addr=0x00103fe0: memset
+	movw    r2, #17792
+	add     r0, sp, #278528
+	mov     r1, #0
+	movt    r2, #4
+	add     r0, r0, #4016
+	mov     r5, #0
+	bl      +13004  ; addr=0x00103fe0: memset
+	sub     r3, r4, #4
+	str     r3, [sp, #+8]
+	add     r3, r4, #16
+	mov     r4, #0
+	str     r3, [sp, #+12]
+	add     r3, sp, #2608
+	add     r8, sp, #278528
+	add     r9, r3, #278528
+	add     r8, r8, #4016
+	add     r9, r9, #1408
+	mov     r7, r3
+	mov     r2, #2592
+	mov     r1, #0
+	mov     r0, r7
+	add     r7, r7, r2
+	bl      +12940  ; addr=0x00103fe0: memset
+	mov     r2, #2592
+	mov     r1, #0
+	mov     r0, r8
+	add     r8, r8, r2
+	bl      +12920  ; addr=0x00103fe0: memset
+	mov     r2, #2592
+	mov     r1, r11
+	add     r0, sp, #16
+	bl      +11400  ; addr=0x00103a00: memcpy
+	cmp     r7, r9
+	bne     -68     ; addr=0x00100d3c: ldpcd_opt + 0x00000090
+	mov     r3, #4
+	str     r3, [sp, #+4]
+	ldr     r8, [pc, #+464]
+	add     r9, sp, #278528
+	add     r10, sp, #2608
+	add     r9, r9, #4016
+	vldr    s11, [pc, #+436]
+	add     r12, sp, #16
+	vldr    s10, [pc, #+432]
+	mov     r0, r10
+	mov     r1, r9
+	mov     r2, r12
+	mov     lr, r8
+	mov     r3, #0
+	vmov.f32 s12, s11
+	vmov.f32 s13, s10
+	b       +20     ; addr=0x00100dd8: ldpcd_opt + 0x0000012c
+	add     r3, r3, #1
+	add     r2, r2, #4
+	cmp     r3, #648
+	add     r1, r1, #4
+	add     r0, r0, #4
+	beq     +92     ; addr=0x00100e38: ldpcd_opt + 0x0000018c
+	ldr     r7, [lr, #+4]!
+	cmp     r7, #1
+	bne     -40     ; addr=0x00100dc0: ldpcd_opt + 0x00000114
+	vldr    s14, [r2]
+	vldr    s15, [r1]
+	vsub.f32 s15, s14, s15
+	vcmpe.f32 s15, #0.0
+	vmrs    APSR_nzcv, fpscr
+	vmovmi  r7, s13
+	rsbmi   r7, r7, #0
+	vabs.f32 s14, s15
+	vcmpe.f32 s14, s12
+	 vmovmi  s13, r7
+	vmrs    APSR_nzcv, fpscr
+	vstr    s15, [r0]
+	 bmi     +12     ; addr=0x00100e28: ldpcd_opt + 0x0000017c
+	vcmp.f32 s14, s11
+	vmrs    APSR_nzcv, fpscr
+	vmovmi.f32 s11, s14
+	b       -108    ; addr=0x00100dc0: ldpcd_opt + 0x00000114
+	vmov.f32 s11, s12
+	mov     r4, r3
+	vmov.f32 s12, s14
+	b       -124    ; addr=0x00100dc0: ldpcd_opt + 0x00000114
+	vmov.f32 s10, s13
+	mov     r1, r10
+	mov     r2, r9
+	mov     r0, r8
+	mov     r3, #0
+	b       +20     ; addr=0x00100e68: ldpcd_opt + 0x000001bc
+	add     r3, r3, #1
+	add     r2, r2, #4
+	cmp     r3, #648
+	add     r12, r12, #4
+	add     r1, r1, #4
+	beq     +92     ; addr=0x00100ec8: ldpcd_opt + 0x0000021c
+	ldr     lr, [r0, #+4]!
+	cmp     lr, #1
+	bne     -40     ; addr=0x00100e50: ldpcd_opt + 0x000001a4
+	cmp     r4, r3
+	beq     +172    ; addr=0x00100f2c: ldpcd_opt + 0x00000280
+	vcvt.f64.f32 d16, s12
+	vcmpe.f64 d16, d8
+	vmrs    APSR_nzcv, fpscr
+	vmovle  s15, r5
+	strle   r5, [r2]
+	ble     +8      ; addr=0x00100ea0: ldpcd_opt + 0x000001f4
+	vsub.f64 d16, d16, d8
+	vcvt.f32.f64 s15, d16
+	vstr    s15, [r2]
+	vldr    s13, [r1]
+	vcvt.f32.s32 s14, s10
+	vcmpe.f32 s13, #0.0
+	vmrs    APSR_nzcv, fpscr
+	vmulge.f32 s15, s14, s15
+	vnmullt.f32 s15, s15, s14
+	vadd.f32 s13, s13, s15
+	vstr    s15, [r2]
+	vstr    s13, [r12]
+	b       -124    ; addr=0x00100e50: ldpcd_opt + 0x000001a4
+	add     r8, r8, #2592
+	add     r9, r9, #2592
+	cmp     r8, r6
+	add     r10, r10, #2592
+	bne     -332    ; addr=0x00100d94: ldpcd_opt + 0x000000e8
+	ldr     r3, [sp, #+4]
+	subs    r3, r3, #1
+	str     r3, [sp, #+4]
+	bne     -364    ; addr=0x00100d84: ldpcd_opt + 0x000000d8
+	ldr     r3, [sp, #+8]
+	mov     r2, #2160
+	add     r1, sp, #16
+	add     r11, r11, #2592
+	ldr     r0, [r3, #+4]!
+	mov     r7, r3
+	str     r3, [sp, #+8]
+	bl      +10992  ; addr=0x00103a00: memcpy
+	ldr     r2, [sp, #+12]
+	cmp     r7, r2
+	bne     -504    ; addr=0x00100d24: ldpcd_opt + 0x00000078
+	add     sp, sp, #561152
+	add     sp, sp, #1328
+	add     sp, sp, #4
+	vpop    {d8}
+	pop     {r4,r5,r6,r7,r8,r9,r10,r11,pc}
+	vcvt.f64.f32 d16, s11
+	vcmpe.f64 d16, d8
+	vmrs    APSR_nzcv, fpscr
+	vmovle  s15, r5
+	strle   r5, [r2]
+	ble     -168    ; addr=0x00100ea0: ldpcd_opt + 0x000001f4
+	b       -184    ; addr=0x00100e94: ldpcd_opt + 0x000001e8
+	// Edit code above!! //
+	///////////////////////
+}
+
+void Encoder(int* input, int* codeword) {
+
+	//***************  Make G Matrix  ************
+	int p = 0;
+
+	for (int i = 0; i < 540; i++) {
+		codeword[i] = input[i];
+	}
+
+	for (int i = 0; i < 108; i++) {
+		for (int j = 0; j < 540; j++) {
+			p += input[j] * G[j][i + 540];
+			p = p % 2;
+		}
+		codeword[i + 540] = p;
+		p = 0;
+	}
+
+}
+
+void LLR_maker(int* codeword, float* LLR) {
+
+	for (int i = 0; i < 648; i++) {
+		if (codeword[i] == 1) {
+			LLR[i] = 1;
+		}
+		else {
+		LLR[i] = -1;
+		}
+	}
+}
+
+int main()
+{
+	/***************** random input generation *****************/
+	int **input;
+	input = (int**)malloc(sizeof(int*) * WC);
+	for(int i = 0; i < WC; i++){
+		input[i] = (int*)malloc(sizeof(int) * MAX_LENGTH);
+	}
+
+	srand(0);
+	for(int i = 0; i < WC; i++){
+		for(int j = 0; j < MAX_LENGTH; j++){
+			input[i][j] = rand() % 2;
+		}
+	}
+	/**********************************************************/
+
+	float **out_ldpcd_ref;
+	out_ldpcd_ref = (float**)malloc(sizeof(float*) * WC);
+	for(int i = 0; i < WC; i++){
+		out_ldpcd_ref[i] = (float*)calloc(MAX_LENGTH, sizeof(float));
+	}
+
+	float **out_ldpcd_opt;
+	out_ldpcd_opt = (float**)malloc(sizeof(int*) * WC);
+	for(int i = 0; i < WC; i++){
+		out_ldpcd_opt[i] = (float*)calloc(MAX_LENGTH, sizeof(float));
+	}
+
+
+	xil_printf("\r\n");
+	xil_printf("<LDPC decoder>\r\n");
+
+	int mode_sel = 0;
+
+	BENCHMARK_CASE *pBenchmarkCase;
+	BENCHMARK_STATISTICS *pStat;
+
+
+	//1) Data
+	//xil_printf("\r\n------------1) Data-----------\n");
+
+	//2) Encoder
+	int codeword[WC][N] = { 0, };
+	//xil_printf("\r\n------------2) Encoder-----------\n");
+
+	for (int i = 0; i < WC; i++) {
+		Encoder(input[i], codeword[i]);
+	}
+
+	//3) LLR (-1 : +1)
+	//xil_printf("\r\n------------3) LLR-----------\n");
+	float LLR[WC][648] = { 0, };
+
+	for (int i = 0; i < WC; i++) {
+		LLR_maker(codeword[i], LLR[i]);
+	}
+
+	//4) Noise
+	//xil_printf("\r\n------------4) Noise-----------\n");
+	float NLLR[WC][N] = { 0, };
+
+	for(int i = 0; i < WC; i++){
+		for(int j = 0; j < N; j++){
+			NLLR[i][j] = LLR[i][j] + (float)(rand() % 100) / 1000;
+		}
+	}
+
+
+	int random = 0;
+	for(int i = 0; i < WC; i++){
+		for(int j = 0 ; j < 20; j++){
+			random = (int)rand()%648;
+			NLLR[i][random] = -LLR[i][random] / 5 + (float)(rand() % 100) / 1000;
+		}
+	}
+
+
+	//5) Decoding
+	//xil_printf("\r\n------------5) Decoding-----------\n");
+
+	double error = 0;
+	double signal = 0;
+	double NSRdB = 0;
+	double opt_time = 0;
+	double ref_time = 0;
+
+	for (mode_sel = 0; mode_sel < 2; mode_sel++)
+	{
+		if (mode_sel == 0)
+		{
+				ldpcd_ref(NLLR, out_ldpcd_ref);
+		}
+		else
+		{
+				ldpcd_opt(NLLR, out_ldpcd_opt);
+		}
+	}
+
+	for (int i = 0; i < WC; i++){
+		for (int j = 0; j < MAX_LENGTH; j++) {
+			error += pow((out_ldpcd_ref[i][j] - out_ldpcd_opt[i][j]), 2);
+			signal += pow(out_ldpcd_ref[i][j], 2);
+		}
+	}
+
+	NSRdB = 10 * log10(error / signal);
+
+	printf("\r\nMeasured Accuracy : NSR(dB) = %0.3f \n", NSRdB);
+
+	BENCHMARK_CASE BenchmarkCases[TEST_CASE] = {
+		{"LDPC Reference", TEST_ROUNDS, initializor_dummy, ldpcd_ref,
+			{NLLR, out_ldpcd_ref},
+			0, validator_dummy
+		},
+		{"LDPC Optimization", TEST_ROUNDS, initializor_dummy, ldpcd_opt,
+			{NLLR, out_ldpcd_opt},
+			0, validator_dummy
+		}
+	};
+
+	Xil_L1DCacheEnable();
+	Xil_L2CacheDisable();
+	Xil_L1ICacheEnable();
+
+	xil_printf("\r\n");
+	xil_printf("-----Benchmarking Start-----\r\n");
+	for (int i = 0; i < TEST_CASE; i++)
+	{
+		pBenchmarkCase = &BenchmarkCases[i];
+		pStat = &(pBenchmarkCase->stat);
+		printf("Case %d: %s\r\n", i, pBenchmarkCase->pName);
+		run_benchmark_single(pBenchmarkCase);
+		statistics_print(pStat);
+		if (i == 0)
+			ref_time = pStat->ullMax;
+		else
+			opt_time = pStat->ullMax;
+	}
+	xil_printf("----Benchmarking Complete----\r\n");
+	xil_printf("\r\n");
+	printf("Optimized LDPC Decoder is x%.2f faster than Reference\r\n", (double)(ref_time/opt_time));
+	xil_printf("\r\n");
+
+	for(int i = 0; i < WC; i++)
+		free(input[i]);
+	free(input);
+
+	for(int i = 0; i < WC; i++)
+		free(out_ldpcd_ref[i]);
+	free(out_ldpcd_ref);
+
+	for(int i = 0; i < WC; i++)
+		free(out_ldpcd_opt[i]);
+	free(out_ldpcd_opt);
+
+    return 0;
+
+}
+

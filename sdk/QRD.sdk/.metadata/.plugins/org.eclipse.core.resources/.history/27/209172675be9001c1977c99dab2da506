@@ -1,0 +1,24 @@
+/*
+ * sqrt_assembly.s
+ *
+ *  Created on: 2022. 6. 9.
+ *      Author: Kyle Park
+ */
+
+.text
+.syntax unified
+
+.align 8
+.global sqrt_assembly
+.arm
+
+/*
+
+r0 : sq
+r1 : tmp_r
+
+*/
+
+sqrt_assembly:
+	vsqrt r1, r0
+	bx lr

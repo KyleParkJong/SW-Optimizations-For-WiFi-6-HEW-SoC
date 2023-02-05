@@ -1,0 +1,16 @@
+com.xilinx.sdk.linkgen.prefs.team_LDPCD\:.bss=ps7_ddr_0
+com.xilinx.sdk.linkgen.prefs.team_LDPCD\:.data=ps7_ddr_0
+com.xilinx.sdk.linkgen.prefs.team_LDPCD\:.data1=ps7_ddr_0
+com.xilinx.sdk.linkgen.prefs.team_LDPCD\:.fixup=ps7_ddr_0
+com.xilinx.sdk.linkgen.prefs.team_LDPCD\:.rodata=ps7_ddr_0
+com.xilinx.sdk.linkgen.prefs.team_LDPCD\:.rodata1=ps7_ddr_0
+com.xilinx.sdk.linkgen.prefs.team_LDPCD\:.sbss=ps7_ddr_0
+com.xilinx.sdk.linkgen.prefs.team_LDPCD\:.sbss2=ps7_ddr_0
+com.xilinx.sdk.linkgen.prefs.team_LDPCD\:.sdata=ps7_ddr_0
+com.xilinx.sdk.linkgen.prefs.team_LDPCD\:.sdata2=ps7_ddr_0
+com.xilinx.sdk.linkgen.prefs.team_LDPCD\:.text=ps7_ddr_0
+com.xilinx.sdk.linkgen.prefs.team_LDPCD\:heap=ps7_ddr_0
+com.xilinx.sdk.linkgen.prefs.team_LDPCD\:heap-size=104857600
+com.xilinx.sdk.linkgen.prefs.team_LDPCD\:stack=ps7_ddr_0
+com.xilinx.sdk.linkgen.prefs.team_LDPCD\:stack-size=10485760
+eclipse.preferences.version=1

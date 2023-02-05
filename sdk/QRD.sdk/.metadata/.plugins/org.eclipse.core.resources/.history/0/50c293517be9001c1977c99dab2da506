@@ -1,0 +1,33 @@
+/*
+ * sqrt_assembly.s
+ *
+ *  Created on: 2022. 6. 9.
+ *      Author: Kyle Park
+ */
+
+.text
+.syntax unified
+
+.align 4
+.global sqrt_assembly
+.arm
+
+/*
+
+r0 : sq
+r1 : tmp_r
+
+*/
+
+sqrt_assembly(float):
+    push    {r11, lr}
+    mov     r11, sp
+    sub     sp, sp, #8
+    mov     r1, r0
+    str     r0, [sp, #4]
+    ldr     r0, [sp, #4]
+    str     r1, [sp]                        @ 4-byte Spill
+    bl      std::sqrt(float)
+    mov     sp, r11
+    pop     {r11, lr}
+    bx      lr

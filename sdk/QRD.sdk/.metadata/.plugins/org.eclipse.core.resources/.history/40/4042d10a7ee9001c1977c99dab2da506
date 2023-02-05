@@ -1,0 +1,43 @@
+/*
+ * sqrt_assembly.s
+ *
+ *  Created on: 2022. 6. 9.
+ *      Author: Kyle Park
+ */
+
+.text
+.syntax unified
+
+.align 4
+.global sqrt_assembly
+.arm
+
+/*
+
+r0 : sq
+r1 : tmp_r
+
+*/
+
+sqrt_assembly:
+        push    {r4, fp, lr}
+        add     fp, sp, #8
+        sub     sp, sp, #12
+        str     r0, [fp, #-16]    @ float
+        ldr     r0, [fp, #-16]    @ float
+        bl      __aeabi_f2d
+        mov     r3, r0
+        mov     r4, r1
+        mov     r0, r3
+        mov     r1, r4
+        bl      sqrt
+        mov     r3, r0
+        mov     r4, r1
+        mov     r0, r3
+        mov     r1, r4
+        bl      __aeabi_d2f
+        mov     r3, r0
+        mov     r0, r3
+        sub     sp, fp, #8
+        pop     {r4, fp, lr}
+        bx      lr
