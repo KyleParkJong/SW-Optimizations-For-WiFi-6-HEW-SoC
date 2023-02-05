@@ -62,4 +62,6 @@ Microprocessor-Application Term project (Park Jonghyuk, Ko Ryeowook)
 * SW implementation on ZYNQ Z7-20
 * Usage of Vivado SDK
 * Improved my C programming skills
+* Learning of ways to optimize C code
 * Understanding of assembly language
+* Read IEEE articles related to software optimization
