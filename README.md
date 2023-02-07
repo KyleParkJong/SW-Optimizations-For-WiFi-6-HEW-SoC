@@ -4,7 +4,7 @@
 > 건국대학교 3학년 1학기, 마이크로프로세서응용 - 박종혁, 고려욱 (2인 1조 텀프로젝트)
 
 # 0. Key objectives of this Term project 
-> __Optimizing reference QR Decomposition & LDPC Decoding C code__
+### __Optimizing reference QR Decomposition & LDPC Decoding C code__
   * Pure-SW implementation (No HW block allowed to accelerate the function)
 
 ## > Evaluation Criteria
