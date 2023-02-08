@@ -60,7 +60,7 @@
 
 - More details : 16team_final.pdf
 
-# 4. What I learned
+# 4. What I have learned
 * SW implementation on ZYNQ Z7-20
 * Usage of Vivado SDK
 * Improved my C programming skills
