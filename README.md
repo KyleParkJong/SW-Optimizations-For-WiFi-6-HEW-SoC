@@ -50,13 +50,13 @@
 
 <img src="/images/ldpcd_result.png" width="80%" height="80%" title="ldpcd_result" alt="ldpcd_result"></img>
 
-* **5.44** faster than the reference with NSR of -inf [dB]
+* **5.44** times faster than the reference with NSR of -inf [dB]
 
 ## QR Decomposition
 
 <img src="/images/qrd_result.png" width="80%" height="80%" title="lqrd_result" alt="qrd_result"></img>
 
-* **1.37** faster than the reference with NSR of -57.682 [dB]
+* **2.16** times faster than the reference with NSR of -57.682 [dB]
 
 - More details : 16team_final.pdf
 
